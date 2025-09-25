@@ -1,0 +1,33 @@
+name: FinanceControl
+description: Um app simples para gerenciar suas finanças.
+publish_to: 'none' # Isso impede que o app seja publicado no pub.dev
+
+version: 1.0.0+1 # Versão do app (major.minor.patch+build)
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+  sdk: flutter
+
+  sqflite: ^2.3.0
+  path: ^1.8.3
+  shared_preferences: ^2.2.2
+  intl: ^0.18.1
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icon.png 
