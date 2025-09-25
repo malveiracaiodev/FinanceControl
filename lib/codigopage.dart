@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CodigoPage extends StatefulWidget {
+  const CodigoPage({super.key});
+
   @override
   State<CodigoPage> createState() => _CodigoPageState();
 }
@@ -25,8 +27,8 @@ class _CodigoPageState extends State<CodigoPage> {
       mostrarSnackBar('Por favor, insira um código.');
     } else if (codigo == 'FIN123') {
       mostrarSnackBar('Código válido! Acesso liberado 🎉', cor: Colors.green);
-      // Aqui você pode navegar para outra tela, ex:
-      // Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
+      // Exemplo de navegação:
+      // Navigator.push(context, MaterialPageRoute(builder: (_) => const HomePage()));
     } else {
       mostrarSnackBar('Código inválido. Tente novamente.');
     }
@@ -59,7 +61,10 @@ class _CodigoPageState extends State<CodigoPage> {
               onPressed: validarCodigo,
               icon: const Icon(Icons.check),
               label: const Text('Validar código'),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green[600]),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green[600],
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
             ),
           ],
         ),

@@ -4,7 +4,7 @@ import 'homepage.dart';
 import 'loginpage.dart';
 
 class AuthGate extends StatefulWidget {
-  const AuthGate({Key? key}) : super(key: key);
+  const AuthGate({super.key});
 
   @override
   State<AuthGate> createState() => _AuthGateState();
@@ -41,10 +41,8 @@ class _AuthGateState extends State<AuthGate> {
       );
     }
 
-    if (isLoggedIn! && nome != null && nome!.isNotEmpty) {
-      return HomePage(nome: nome!);
-    }
-
-    return const LoginPage(); // ❌ Removido SnackBar durante build
+    return isLoggedIn! && nome != null && nome!.isNotEmpty
+        ? HomePage(nome: nome!)
+        : const LoginPage();
   }
 }

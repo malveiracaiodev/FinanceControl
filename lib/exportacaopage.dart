@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
-class ExportacaoPage extends StatelessWidget {
-  final double saldoFinal = 2300.00;
-  final double totalGastos = 950.00;
-  final int metasConcluidas = 3;
+class ExportacaoPage extends StatefulWidget {
+  const ExportacaoPage({super.key});
 
-  const ExportacaoPage({Key? key}) : super(key: key);
+  @override
+  State<ExportacaoPage> createState() => _ExportacaoPageState();
+}
 
-  void mostrarSnackBar(BuildContext context, String mensagem, {Color cor = Colors.green}) {
+class _ExportacaoPageState extends State<ExportacaoPage> {
+  final saldoController = TextEditingController();
+  final gastosController = TextEditingController();
+  final metasController = TextEditingController();
+
+  void mostrarSnackBar(String mensagem, {Color cor = Colors.green}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(mensagem),
@@ -15,6 +20,25 @@ class ExportacaoPage extends StatelessWidget {
         duration: const Duration(seconds: 2),
       ),
     );
+  }
+
+  void exportarRelatorio() {
+    final saldo = double.tryParse(saldoController.text);
+    final gastos = double.tryParse(gastosController.text);
+    final metas = int.tryParse(metasController.text);
+
+    if (saldo == null || gastos == null || metas == null) {
+      mostrarSnackBar('Preencha todos os campos corretamente.', cor: Colors.red);
+      return;
+    }
+
+    mostrarSnackBar('Relatório exportado com sucesso!');
+    // Aqui você pode adicionar lógica real de exportação
+  }
+
+  void compartilharRelatorio() {
+    mostrarSnackBar('Relatório pronto para compartilhamento!');
+    // Aqui você pode adicionar lógica real de compartilhamento
   }
 
   @override
@@ -31,34 +55,40 @@ class ExportacaoPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
-              'Resumo do mês',
+              'Preencha os dados do mês',
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 24),
 
-            Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              elevation: 3,
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.account_balance_wallet),
-                    title: const Text('Saldo final'),
-                    trailing: Text('R\$ ${saldoFinal.toStringAsFixed(2)}'),
-                  ),
-                  const Divider(height: 0),
-                  ListTile(
-                    leading: const Icon(Icons.money_off),
-                    title: const Text('Total de gastos'),
-                    trailing: Text('R\$ ${totalGastos.toStringAsFixed(2)}'),
-                  ),
-                  const Divider(height: 0),
-                  ListTile(
-                    leading: const Icon(Icons.flag),
-                    title: const Text('Metas concluídas'),
-                    trailing: Text('$metasConcluidas'),
-                  ),
-                ],
+            TextField(
+              controller: saldoController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Saldo final (R\$)',
+                prefixIcon: Icon(Icons.account_balance_wallet),
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            TextField(
+              controller: gastosController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Total de gastos (R\$)',
+                prefixIcon: Icon(Icons.money_off),
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            TextField(
+              controller: metasController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Metas concluídas',
+                prefixIcon: Icon(Icons.flag),
+                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 32),
@@ -67,18 +97,14 @@ class ExportacaoPage extends StatelessWidget {
               icon: const Icon(Icons.picture_as_pdf),
               label: const Text('Exportar como PDF'),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.green[600]),
-              onPressed: () {
-                mostrarSnackBar(context, 'Relatório exportado como PDF!');
-              },
+              onPressed: exportarRelatorio,
             ),
             const SizedBox(height: 16),
             ElevatedButton.icon(
               icon: const Icon(Icons.share),
               label: const Text('Compartilhar relatório'),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.blue[600]),
-              onPressed: () {
-                mostrarSnackBar(context, 'Relatório pronto para compartilhamento!');
-              },
+              onPressed: compartilharRelatorio,
             ),
           ],
         ),

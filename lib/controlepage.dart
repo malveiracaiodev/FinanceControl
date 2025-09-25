@@ -10,17 +10,17 @@ import 'models/gasto.dart';
 class ControlePage extends StatefulWidget {
   final String nome;
 
-  const ControlePage({Key? key, required this.nome}) : super(key: key);
+  const ControlePage({super.key, required this.nome});
 
   @override
   State<ControlePage> createState() => _ControlePageState();
 }
 
 class _ControlePageState extends State<ControlePage> {
-  final TextEditingController descricaoController = TextEditingController();
-  final TextEditingController valorController = TextEditingController();
-  final TextEditingController saldoController = TextEditingController();
-  final TextEditingController metaController = TextEditingController();
+  final descricaoController = TextEditingController();
+  final valorController = TextEditingController();
+  final saldoController = TextEditingController();
+  final metaController = TextEditingController();
 
   List<Gasto> gastos = [];
   double meta = 0.0;
@@ -45,9 +45,7 @@ class _ControlePageState extends State<ControlePage> {
   Future<void> carregarGastos() async {
     final lista = await DatabaseHelper().getGastos();
     if (mounted) {
-      setState(() {
-        gastos = lista;
-      });
+      setState(() => gastos = lista);
     }
   }
 
@@ -69,9 +67,7 @@ class _ControlePageState extends State<ControlePage> {
       return;
     }
     await prefs.setDouble('metaGasto', valor);
-    setState(() {
-      meta = valor;
-    });
+    setState(() => meta = valor);
     mostrarSnackBar('Meta atualizada para R\$ ${meta.toStringAsFixed(2)}');
   }
 
@@ -96,31 +92,30 @@ class _ControlePageState extends State<ControlePage> {
     return gastos.fold(0.0, (total, item) => total + item.valor);
   }
 
-void navegar(String destino) {
-  late Widget pagina;
+  void navegar(String destino) {
+    late Widget pagina;
 
-  switch (destino) {
-    case 'Dashboard':
-      final double saldo = double.tryParse(saldoController.text) ?? 0.0;
-      final double gastos = calcularTotalGastos();
-      pagina = DashboardPage(saldo: saldo, gastos: gastos);
-      break;
-    case 'Metas':
-      pagina = MetasPage();
-      break;
-    case 'Resumo':
-      pagina = ResumoMensalPage();
-      break;
-    case 'Exportar':
-      pagina = ExportacaoPage();
-      break;
-    default:
-      return; // evita erro se destino for inválido
+    switch (destino) {
+      case 'Dashboard':
+        final saldo = double.tryParse(saldoController.text) ?? 0.0;
+        final total = calcularTotalGastos();
+        pagina = DashboardPage(saldo: saldo, gastos: total);
+        break;
+      case 'Metas':
+        pagina = const MetasPage();
+        break;
+      case 'Resumo':
+        pagina = const ResumoMensalPage();
+        break;
+      case 'Exportar':
+        pagina = const ExportacaoPage();
+        break;
+      default:
+        return;
+    }
+
+    Navigator.push(context, MaterialPageRoute(builder: (_) => pagina));
   }
-
-  Navigator.push(context, MaterialPageRoute(builder: (_) => pagina));
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -135,11 +130,11 @@ void navegar(String destino) {
         actions: [
           PopupMenuButton<String>(
             onSelected: navegar,
-            itemBuilder: (context) => [
-              const PopupMenuItem(value: 'Dashboard', child: Text('Dashboard')),
-              const PopupMenuItem(value: 'Metas', child: Text('Definir Metas')),
-              const PopupMenuItem(value: 'Resumo', child: Text('Resumo Mensal')),
-              const PopupMenuItem(value: 'Exportar', child: Text('Exportar Relatório')),
+            itemBuilder: (context) => const [
+              PopupMenuItem(value: 'Dashboard', child: Text('Dashboard')),
+              PopupMenuItem(value: 'Metas', child: Text('Definir Metas')),
+              PopupMenuItem(value: 'Resumo', child: Text('Resumo Mensal')),
+              PopupMenuItem(value: 'Exportar', child: Text('Exportar Relatório')),
             ],
           ),
         ],

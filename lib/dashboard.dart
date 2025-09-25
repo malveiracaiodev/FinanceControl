@@ -5,10 +5,10 @@ class DashboardPage extends StatelessWidget {
   final double gastos;
 
   const DashboardPage({
-    Key? key,
+    super.key,
     required this.saldo,
     required this.gastos,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,6 @@ class DashboardPage extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // Card de Saldo
             Card(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               elevation: 4,
@@ -44,7 +43,6 @@ class DashboardPage extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Card de Gastos
             Card(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               elevation: 4,
@@ -59,7 +57,6 @@ class DashboardPage extends StatelessWidget {
             ),
             const SizedBox(height: 32),
 
-            // Gráfico simples (placeholder)
             Container(
               height: 200,
               decoration: BoxDecoration(
@@ -86,9 +83,7 @@ class DashboardPage extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
         onTap: (index) {
-          if (index == 0) {
-            Navigator.pop(context);
-          }
+          if (index == 0) Navigator.pop(context);
         },
       ),
     );

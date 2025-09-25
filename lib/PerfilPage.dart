@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PerfilPage extends StatefulWidget {
-  const PerfilPage({Key? key}) : super(key: key);
+  const PerfilPage({super.key});
 
   @override
   State<PerfilPage> createState() => _PerfilPageState();
@@ -24,6 +24,7 @@ class _PerfilPageState extends State<PerfilPage> {
 
   Future<void> carregarPerfil() async {
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     setState(() {
       nomeController.text = prefs.getString('perfilNome') ?? '';
       ganhoController.text = prefs.getString('perfilGanho') ?? '';
@@ -33,6 +34,7 @@ class _PerfilPageState extends State<PerfilPage> {
   }
 
   void mostrarSnackBar(String mensagem, {Color cor = Colors.green}) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(mensagem),
@@ -61,6 +63,47 @@ class _PerfilPageState extends State<PerfilPage> {
     mostrarSnackBar('Perfil salvo com sucesso!');
   }
 
+  Widget _buildAvatar() {
+    return Stack(
+      alignment: Alignment.bottomRight,
+      children: [
+        CircleAvatar(
+          radius: 48,
+          backgroundColor: Colors.grey[300],
+          child: Icon(Icons.person, size: 48, color: Colors.grey[700]),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.green[600],
+          ),
+          child: IconButton(
+            icon: const Icon(Icons.camera_alt, color: Colors.white),
+            onPressed: () {
+              mostrarSnackBar('Função de imagem ainda não implementada.', cor: Colors.orange);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCampoTexto({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType tipo = TextInputType.text,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: tipo,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,79 +116,45 @@ class _PerfilPageState extends State<PerfilPage> {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            // Avatar com botão de edição
-            Stack(
-              alignment: Alignment.bottomRight,
-              children: [
-                CircleAvatar(
-                  radius: 48,
-                  backgroundColor: Colors.grey[300],
-                  child: Icon(Icons.person, size: 48, color: Colors.grey[700]),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.green[600],
-                  ),
-                  child: IconButton(
-                    icon: const Icon(Icons.camera_alt, color: Colors.white),
-                    onPressed: () {
-                      mostrarSnackBar('Função de imagem ainda não implementada.', cor: Colors.orange);
-                    },
-                  ),
-                ),
-              ],
-            ),
+            _buildAvatar(),
             const SizedBox(height: 24),
-
-            TextField(
+            _buildCampoTexto(
               controller: nomeController,
-              decoration: const InputDecoration(
-                labelText: 'Seu nome',
-                prefixIcon: Icon(Icons.person),
-              ),
+              label: 'Seu nome',
+              icon: Icons.person,
             ),
             const SizedBox(height: 16),
-
-            TextField(
+            _buildCampoTexto(
               controller: ganhoController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Ganho mensal',
-                prefixIcon: Icon(Icons.attach_money),
-              ),
+              label: 'Ganho mensal',
+              icon: Icons.attach_money,
+              tipo: TextInputType.number,
             ),
             const SizedBox(height: 16),
-
-            TextField(
+            _buildCampoTexto(
               controller: empregoController,
-              decoration: const InputDecoration(
-                labelText: 'Emprego',
-                prefixIcon: Icon(Icons.work),
-              ),
+              label: 'Emprego',
+              icon: Icons.work,
             ),
             const SizedBox(height: 16),
-
             DropdownButtonFormField<String>(
               initialValue: frequenciaSelecionada,
-              items: frequencias.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
+              items: frequencias.map((value) {
+                return DropdownMenuItem(value: value, child: Text(value));
               }).toList(),
               decoration: const InputDecoration(
                 labelText: 'Frequência',
                 prefixIcon: Icon(Icons.calendar_today),
               ),
               onChanged: (newValue) {
-                setState(() {
-                  frequenciaSelecionada = newValue!;
-                });
+                if (newValue != null) {
+                  setState(() {
+                    frequenciaSelecionada = newValue;
+                  });
+                }
               },
             ),
             const SizedBox(height: 24),
-
             ElevatedButton.icon(
               onPressed: salvarPerfil,
               icon: const Icon(Icons.check),

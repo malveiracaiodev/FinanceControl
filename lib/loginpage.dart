@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'homepage.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key}); // super parâmetro aplicado
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -33,6 +33,8 @@ class _LoginPageState extends State<LoginPage> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', true);
     await prefs.setString('userName', nome);
+
+    if (!mounted) return;
 
     Navigator.pushReplacement(
       context,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ConfiguracoesPage extends StatefulWidget {
+  const ConfiguracoesPage({super.key});
+
   @override
   State<ConfiguracoesPage> createState() => _ConfiguracoesPageState();
 }
@@ -30,16 +32,16 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
         content: const Text('Tem certeza que deseja apagar todos os dados?'),
         actions: [
           TextButton(
-            child: const Text('Cancelar'),
             onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
           ),
           TextButton(
-            child: const Text('Confirmar'),
             onPressed: () {
               Navigator.pop(context);
               mostrarSnackBar('Dados redefinidos com sucesso!');
               // Aqui você pode adicionar lógica para limpar dados persistentes
             },
+            child: const Text('Confirmar'),
           ),
         ],
       ),
@@ -62,11 +64,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
               title: const Text('Notificações'),
               subtitle: Text(notificacoesAtivas ? 'Ativadas' : 'Desativadas'),
               value: notificacoesAtivas,
-              onChanged: (value) {
-                setState(() {
-                  notificacoesAtivas = value;
-                });
-              },
+              onChanged: (value) => setState(() => notificacoesAtivas = value),
               secondary: const Icon(Icons.notifications),
             ),
             const Divider(),
@@ -75,11 +73,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
               title: const Text('Tema escuro'),
               subtitle: Text(temaEscuro ? 'Ativo' : 'Desativado'),
               value: temaEscuro,
-              onChanged: (value) {
-                setState(() {
-                  temaEscuro = value;
-                });
-              },
+              onChanged: (value) => setState(() => temaEscuro = value),
               secondary: const Icon(Icons.dark_mode),
             ),
             const Divider(),
@@ -87,7 +81,7 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
             DropdownButtonFormField<String>(
               initialValue: idiomaSelecionado,
               items: idiomas.map((idioma) {
-                return DropdownMenuItem<String>(
+                return DropdownMenuItem(
                   value: idioma,
                   child: Text(idioma),
                 );
@@ -99,34 +93,23 @@ class _ConfiguracoesPageState extends State<ConfiguracoesPage> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              onChanged: (novoIdioma) {
-                setState(() {
-                  idiomaSelecionado = novoIdioma!;
-                });
-              },
+              onChanged: (novoIdioma) =>
+                  setState(() => idiomaSelecionado = novoIdioma!),
             ),
             const SizedBox(height: 24),
 
             ElevatedButton.icon(
+              onPressed: confirmarRedefinicao,
               icon: const Icon(Icons.restore),
               label: const Text('Redefinir dados'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red[400],
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
-              onPressed: confirmarRedefinicao,
             ),
           ],
         ),
       ),
     );
   }
-}
-void mostrarSnackBar(BuildContext context, String mensagem, {Color cor = Colors.green}) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(mensagem),
-      backgroundColor: cor,
-      duration: const Duration(seconds: 2),
-    ),
-  );
 }

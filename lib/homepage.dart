@@ -7,7 +7,7 @@ import 'configuracoespage.dart';
 class HomePage extends StatelessWidget {
   final String nome;
 
-  const HomePage({Key? key, required this.nome}) : super(key: key);
+  const HomePage({super.key, required this.nome});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => PerfilPage()), // ❌ Removido const
+                MaterialPageRoute(builder: (_) => const PerfilPage()),
               );
             },
           ),
@@ -43,55 +43,57 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 32),
 
-            ElevatedButton.icon(
-              icon: const Icon(Icons.list),
-              label: const Text('Controle de Gastos'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[600],
-                minimumSize: const Size.fromHeight(50),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => ControlePage(nome: nome)),
-                );
-              },
+            _buildBotao(
+              context,
+              label: 'Controle de Gastos',
+              icon: Icons.list,
+              cor: Colors.green[600],
+              destino: ControlePage(nome: nome),
             ),
             const SizedBox(height: 16),
 
-            ElevatedButton.icon(
-              icon: const Icon(Icons.vpn_key),
-              label: const Text('Entrar com um código'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[600],
-                minimumSize: const Size.fromHeight(50),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => CodigoPage()), // ❌ Removido const
-                );
-              },
+            _buildBotao(
+              context,
+              label: 'Entrar com um código',
+              icon: Icons.vpn_key,
+              cor: Colors.blue[600],
+              destino: const CodigoPage(),
             ),
             const SizedBox(height: 16),
 
-            ElevatedButton.icon(
-              icon: const Icon(Icons.settings),
-              label: const Text('Configurações'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[800],
-                minimumSize: const Size.fromHeight(50),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => ConfiguracoesPage()), // ❌ Removido const
-                );
-              },
+            _buildBotao(
+              context,
+              label: 'Configurações',
+              icon: Icons.settings,
+              cor: Colors.grey[800],
+              destino: const ConfiguracoesPage(),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildBotao(
+    BuildContext context, {
+    required String label,
+    required IconData icon,
+    required Color? cor,
+    required Widget destino,
+  }) {
+    return ElevatedButton.icon(
+      icon: Icon(icon),
+      label: Text(label),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: cor,
+        minimumSize: const Size.fromHeight(50),
+      ),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => destino),
+        );
+      },
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MetasPage extends StatefulWidget {
-  const MetasPage({Key? key}) : super(key: key);
+  const MetasPage({super.key});
 
   @override
   State<MetasPage> createState() => _MetasPageState();
@@ -14,6 +14,7 @@ class _MetasPageState extends State<MetasPage> {
   final List<Map<String, dynamic>> metas = [];
 
   void mostrarSnackBar(String mensagem, {Color cor = Colors.red}) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(mensagem),
@@ -25,9 +26,10 @@ class _MetasPageState extends State<MetasPage> {
 
   void adicionarMeta() {
     final titulo = tituloController.text.trim();
-    final valor = double.tryParse(valorController.text.trim());
+    final valorTexto = valorController.text.trim();
+    final valor = double.tryParse(valorTexto);
 
-    if (titulo.isEmpty || valor == null || valor <= 0) {
+    if (titulo.isEmpty || valorTexto.isEmpty || valor == null || valor <= 0) {
       mostrarSnackBar('Preencha os campos corretamente.');
       return;
     }
@@ -39,6 +41,18 @@ class _MetasPageState extends State<MetasPage> {
     });
 
     mostrarSnackBar('Meta adicionada com sucesso!', cor: Colors.green);
+  }
+
+  Widget _buildMetaItem(Map<String, dynamic> meta) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 3,
+      child: ListTile(
+        leading: const Icon(Icons.star, color: Colors.orange),
+        title: Text(meta['titulo']),
+        trailing: Text('R\$ ${meta['valor'].toStringAsFixed(2)}'),
+      ),
+    );
   }
 
   @override
@@ -86,30 +100,18 @@ class _MetasPageState extends State<MetasPage> {
             const SizedBox(height: 24),
 
             Expanded(
-              child: metas.isEmpty
-                  ? const Center(
+              child: metas.isNotEmpty
+                  ? ListView.separated(
+                      itemCount: metas.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      itemBuilder: (context, index) =>
+                          _buildMetaItem(metas[index]),
+                    )
+                  : const Center(
                       child: Text(
                         'Nenhuma meta definida ainda.',
                         style: TextStyle(fontSize: 16, color: Colors.grey),
                       ),
-                    )
-                  : ListView.separated(
-                      itemCount: metas.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
-                      itemBuilder: (context, index) {
-                        final meta = metas[index];
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 3,
-                          child: ListTile(
-                            leading: const Icon(Icons.star, color: Colors.orange),
-                            title: Text(meta['titulo']),
-                            trailing: Text('R\$ ${meta['valor'].toStringAsFixed(2)}'),
-                          ),
-                        );
-                      },
                     ),
             ),
           ],
